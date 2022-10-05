@@ -46,7 +46,6 @@
 
                     axios.get(`https://hospital-g52-4-be.herokuapp.com/ConsultaUsuario/${userId}`)
                     .then((result)=>{
-                        console.log(result)
                         let perfil = result.data.perfil
                         this.$emit('completedLogIn', dataLogIn,perfil)  
                     }).catch((error)=>{

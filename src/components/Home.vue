@@ -10,10 +10,8 @@ export default {
         return{
             username: localStorage.getItem('username') || "none",
             perfil: localStorage.getItem('perfil') || "none"
-        }
-        
+        }   
     }
-
 }
 </script>
 

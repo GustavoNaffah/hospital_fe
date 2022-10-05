@@ -4,34 +4,107 @@
             <form v-on:submit.prevent="processSignUp">
                 <img src="@/assets/logo.jpg">
                 <br>
-        
+                <div v-if="this.perfil=='Paciente'">
+                    <label id="paciente_direccion"> Direccion:
+                        <input type="text" v-model="paciente.direccion" placeholder="Direccion" required>
+                    </label>
+                    <label id="paciente_ciudad"> Ciudad:
+                        <input type="text" v-model="paciente.ciudad" placeholder="Ciudad" required>
+                    </label>
+                    <label id="paciente_fecha"> Fecha de nacimiento:
+                        <input type="text" v-model="paciente.fNacimiento" placeholder="AAAA-MM-DD" required>
+                    </label>   
+                </div>   
                 
+                <div v-if="this.perfil=='Medico'">
+                    <label id="medico_rol"> Rol:
+                        <input type="text" v-model="medico.rol" placeholder="Rol" required>
+                    </label>
+                    <label id="medico_especialidad"> Especialidad:
+                        <input type="text" v-model="medico.especialidad" placeholder="Especialidad" required>
+                    </label>   
+                </div>
+                <div v-if="this.perfil=='Familiar'">
+                    <label id="familiar_parentesco"> Parentezco:
+                        <input type="text" v-model="familiar.parentesco" placeholder="Parentesco" required>
+                    </label>
+                    <label id="familiar_correo"> Correo:
+                        <input type="E-mail" v-model="familiar.correo" placeholder="Correo" required>
+                    </label>   
+                    <label id="familiar_paciente"> Paciente:
+                        <input type="texto" v-model="familiar.idPaciente" placeholder="Id paciente" required>
+                    </label>  
+                </div>
+                <button type="submit">Registrar</button>       
             </form>    
         </div>
     </div>
 </template>
 
 <script>
+
+
+import jwt_decode from 'jwt-decode';
 import axios from 'axios';
 export default { 
     data:function(){
         return{
+            perfil:localStorage.getItem("regPerfil") ,
+            token: localStorage.getItem("regAccess"),
+            paciente:{
+                perSalud:"1",
+                iduser:"",
+                fNacimiento:"",
+                direccion:"",
+                ciudad:"",
+            },
             medico:{
-                username:"",
-                password:"",
-                perfil:"",
-                name:"",
-                telefono:"",
-                genero:""
+                iduser:"",
+                rol:"",
+                especialidad:""
+            },
+            familiar:{
+                iduser:"",
+                idPaciente:"",
+                parentesco:"",
+                correo:""
             }
+
         }
     },
     methods:{
         processSignUp:function(){
-            axios.post("https://hospital-g52-4-be.herokuapp.com/user/", this.user,{headers:{}})
-            .then((result)=>{
+             let userId= jwt_decode(this.token).user_id.toString();
+             this.medico.iduser = userId
+             this.paciente.iduser = userId
+             this.familiar.iduser = userId
+            if(this.perfil == "Paciente"){
+                axios.post("https://hospital-g52-4-be.herokuapp.com/Paciente/", this.paciente,{headers:{}})
+                .then(()=>{
+                    this.$emit('completedSignUp')
+                }).catch((error)=>{
+                        console.log(error)
+                    });
                 
-            })
+
+            }else if(this.perfil == "Medico"){
+                axios.post("https://hospital-g52-4-be.herokuapp.com/personalSalud/", this.medico,{headers:{}})
+                .then(()=>{
+                    this.$emit('completedSignUp') 
+                }) .catch((error)=>{
+                        console.log(error)
+                    });
+                
+
+            }else if(this.perfil == "Familiar"){
+                axios.post("https://hospital-g52-4-be.herokuapp.com/Familiar/", this.familiar,{headers:{}})
+                .then(()=>{
+                    this.$emit('completedSignUp') 
+                }).catch((error)=>{
+                        console.log(error)
+                    });
+            }
+            
         }
     }
 }

@@ -60,6 +60,7 @@
       },
       completedSignUp: function(data){
           alert("Registro Exitoso");
+          this.$router.push({name:"home"});
       },
       logOut:function(){
         localStorage.clear();

@@ -16,7 +16,7 @@
                 </label>
                 <label id="user_perfil"> Perfil:
                     <br>
-                    <select id="cajon" v-model="user.perfil">
+                    <select id="cajon1" v-model="user.perfil" required>
                         <option>Paciente</option>
                         <option>Familiar</option>
                         <option>Medico</option>
@@ -28,7 +28,7 @@
                 </label>
                 <label id="genero">Genero:
                     <br>
-                    <select id="cajon" v-model="user.genero">
+                    <select id="cajon2" v-model="user.genero" required>
                         <option>masculino</option>
                         <option>femenino</option>
                     </select>
@@ -58,10 +58,10 @@ export default {
         processSignUp:function(){
             axios.post("https://hospital-g52-4-be.herokuapp.com/user/", this.user,{headers:{}})
             .then((result)=>{
-                localStorage.setItem( "regPerfil",result.data.perfil)
+                localStorage.setItem( "regAccess",result.data.access)
+                localStorage.setItem("regPerfil",this.user.perfil)
                 alert("registro en progreso")
-                this.$router.push({name:"signUp2"});
-
+                this.$router.push({name:"signUp2"})
             })
         }
     }
